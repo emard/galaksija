@@ -63,7 +63,7 @@ begin
         end
       end else begin
         h_pos <= h_pos + 1;
-        rgb_data <= (h_pos < 32*8*2 && v_pos < 200*2) ? data_out[h_pos[3:1]] ? 24'h000000 : 24'hffffff : 24'h000000;
+        rgb_data <= (h_pos < 32*8*2 && v_pos < 200*2) ? data_out_rotated[h_pos[3:1]] ? 24'h000000 : 24'hffffff : 24'h000000;
       end
       lcd_den <= !visible;
       lcd_hsync <= !((h_pos >= (h_visible + h_front)) && (h_pos < (h_visible + h_front + h_sync)));
@@ -77,6 +77,9 @@ assign v_active = (v_pos < v_visible);
 assign visible = h_active && v_active;
 
 wire [7:0] data_out;
+wire [7:0] data_out_rotated; // rotate for proper font appearance
+assign data_out_rotated = {data_out[6:0], data_out[7]};
+
 reg [7:0] code;
 wire [7:0] attr;
 
@@ -84,8 +87,8 @@ wire [6:0] char;
 
 wire [10:0] video_addr;
 
-assign char = ((code>63 && code<96) || (code>127 && code<192)) ?  code - 64 :
-              (code>191) ? code -128 : code;
+assign char = ((code>63 && code<96) || (code>127 && code<192)) ? code-64 :
+              (code>191) ? code-128 : code;
 
 font_rom galaxija_font(.clk(clk),.addr({ font_line[4:1], char }),.data_out(data_out));
 
