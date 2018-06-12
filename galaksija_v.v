@@ -55,18 +55,18 @@ assign LCD_PWM = 1'b1;
 
 video
  #(
-  .h_visible(10'd320),
-  .h_front(10'd20),
-  .h_sync(10'd30),
-  .h_back(10'd38),
-  .v_visible(10'd240),
-  .v_front(10'd10), // increased 4->10
-  .v_sync(10'd3),
-  .v_back(10'd15)
+  .h_visible(10'd640),
+  .h_front(10'd16),
+  .h_sync(10'd96),
+  .h_back(10'd48),
+  .v_visible(10'd480),
+  .v_front(10'd10),
+  .v_sync(10'd2),
+  .v_back(10'd33)
  )
  generator
  (
-  .clk(pixclk), // pixel clock in (should be 19.2 MHz, we supply 25 MHz)
+  .clk(pixclk), // pixel clock 25 MHz
   .resetn(reset_n),
   .lcd_dat(LCD_DAT),
   .lcd_hsync(LCD_HS),
@@ -349,63 +349,5 @@ bram_true2p_1clk
    .data_in_a(odata),
    .data_out_a(ram11_out)
  );
-
-/*
-SB_SPRAM256KA ram00
-  (
-    .ADDRESS(addr[13:0]),
-    .DATAIN({ 8'd0,odata[7:0]}),
-    .MASKWREN({2'b0, wr_ram2, wr_ram2}),
-    .WREN(wr_ram2),
-    .CHIPSELECT(cs_0),
-    .CLOCK(clk),
-    .STANDBY(1'b0),
-    .SLEEP(1'b0),
-    .POWEROFF(1'b1),
-    .DATAOUT({tmp00, ram00_out[7:0]})
-  );
-
-SB_SPRAM256KA ram01
-  (
-    .ADDRESS(addr[13:0]),
-    .DATAIN({ 8'd0,odata[7:0]}),
-    .MASKWREN({2'b0, wr_ram2, wr_ram2}),
-    .WREN(wr_ram2),
-    .CHIPSELECT(cs_1),
-    .CLOCK(clk),
-    .STANDBY(1'b0),
-    .SLEEP(1'b0),
-    .POWEROFF(1'b1),
-    .DATAOUT({tmp01, ram01_out[7:0]})
-  );
-
-SB_SPRAM256KA ram10
-  (
-    .ADDRESS(addr[13:0]),
-    .DATAIN({ 8'd0,odata[7:0]}),
-    .MASKWREN({2'b0, wr_ram2, wr_ram2}),
-    .WREN(wr_ram2),
-    .CHIPSELECT(cs_2),
-    .CLOCK(clk),
-    .STANDBY(1'b0),
-    .SLEEP(1'b0),
-    .POWEROFF(1'b1),
-    .DATAOUT({tmp10, ram10_out[7:0]})
-  );
-
-SB_SPRAM256KA ram11
-  (
-    .ADDRESS(addr[13:0]),
-    .DATAIN({ 8'd0,odata[7:0]}),
-    .MASKWREN({2'b0, wr_ram2, wr_ram2}),
-    .WREN(wr_ram2),
-    .CHIPSELECT(cs_3),
-    .CLOCK(clk),
-    .STANDBY(1'b0),
-    .SLEEP(1'b0),
-    .POWEROFF(1'b1),
-    .DATAOUT({tmp11, ram11_out[7:0]})
-  );        
-*/
 
 endmodule

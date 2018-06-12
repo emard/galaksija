@@ -1,6 +1,6 @@
 module video
 (
-  input clk,   // 19.2 MHz pixel clock in
+  input clk,   // 25 MHz pixel clock in
   input resetn,
   output reg [7:0] lcd_dat,
   output reg lcd_hsync,
@@ -29,7 +29,7 @@ parameter v_sync = 10'd3;
 parameter v_back = 10'd15;
 parameter v_total = v_visible + v_front + v_sync + v_back;
 
-reg [1:0] channel = 0;
+// reg [1:0] channel = 0;
 
 wire h_active, v_active, visible;
 
@@ -45,8 +45,6 @@ begin
     font_line  <= 4'b0;
   end else begin
     //Pixel counters
-    if (channel == 2) begin
-      channel <= 0;
       if (h_pos == h_total - 1) begin
         h_pos <= 0;
         if (v_pos == v_total - 1) begin
@@ -67,15 +65,10 @@ begin
         h_pos <= h_pos + 1;
         rgb_data <= (h_pos < 32*8 && v_pos<208) ? data_out[h_pos[2:0]] ? 24'h000000 : 24'hffffff : 24'h000000 ;
       end
-    end else begin
-      channel <= channel + 1;
-    end
-    lcd_den <= !visible;
-    lcd_hsync <= !((h_pos >= (h_visible + h_front)) && (h_pos < (h_visible + h_front + h_sync)));
-    lcd_vsync <= !((v_pos >= (v_visible + v_front)) && (v_pos < (v_visible + v_front + v_sync)));
-    lcd_dat <= channel == 0 ? rgb_data[23:16] : 
-               channel == 1 ? rgb_data[15:8]  :
-               rgb_data[7:0];
+      lcd_den <= !visible;
+      lcd_hsync <= !((h_pos >= (h_visible + h_front)) && (h_pos < (h_visible + h_front + h_sync)));
+      lcd_vsync <= !((v_pos >= (v_visible + v_front)) && (v_pos < (v_visible + v_front + v_sync)));
+      lcd_dat <= rgb_data[7:0];
   end
 end
 
