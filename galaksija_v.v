@@ -3,7 +3,7 @@ module galaksija_v
 (
     input clk, // 12 MHz (now 25 MHz)
     input pixclk, // 19.2 MHz (now 25 MHz)
-    input locked, // 1 when clocks are ready to be used
+    input reset_n, // 1 when clocks are ready to be used
     input ser_rx, // serial keyboard
     output [7:0] LCD_DAT,
     output LCD_CLK,
@@ -23,14 +23,18 @@ parameter integer baud = 115200; // serial keyboard baud rate
    ------------------------*/
 
 wire clk;
-wire locked;
+wire reset_n;
 wire pixclk;
 
 reg [6:0] reset_cnt = 0;
-assign resetn = reset_cnt[6];
+
+assign cpu_resetn = reset_cnt[6];
 
 always @(posedge clk) begin
-  if(resetn == 0)
+  if(reset_n == 0)
+    reset_cnt <= 0;
+  else
+   if(cpu_resetn == 0)
     reset_cnt <= reset_cnt + 1;
 end
 
@@ -63,7 +67,7 @@ video
  generator
  (
   .clk(pixclk), // pixel clock in (should be 19.2 MHz, we supply 25 MHz)
-  .resetn(locked),
+  .resetn(reset_n),
   .lcd_dat(LCD_DAT),
   .lcd_hsync(LCD_HS),
   .lcd_vsync(LCD_VS),
@@ -102,7 +106,7 @@ video
 	wire starting;
 	uart_rx uart(
 		.clk(clk),
-		.resetn(locked),
+		.resetn(reset_n),
 
 		.ser_rx(ser_rx),
 
@@ -262,7 +266,7 @@ video
 		.m1_n(m1_n), .mreq_n(mreq_n), .iorq_n(iorq_n), 
 		.rd_n(rd_n), .wr_n(wr_n), .rfsh_n(rfsh_n), .halt_n(halt_n), .busak_n(busak_n),
 		.A(addr), .do(odata), 
-		.reset_n(resetn), .clk(clk), .wait_n(wait_n), .int_n(int_n), .nmi_n(nmi_n), .busrq_n(busrq_n), .di(idata)
+		.reset_n(cpu_resetn), .clk(clk), .wait_n(wait_n), .int_n(int_n), .nmi_n(nmi_n), .busrq_n(busrq_n), .di(idata)
 	);
 	
 	rom_memory #(.ADDR_WIDTH(12),.FILENAME("galrom1.bin.mem")) rom1(.clk(clk),.addr(addr[11:0]),.rd(rd_rom1),.data_out(rom1_out));

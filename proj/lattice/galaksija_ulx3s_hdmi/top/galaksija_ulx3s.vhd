@@ -117,7 +117,13 @@ begin
   wifi_gpio0 <= btn(0); -- holding reset for 2 sec will activate ESP32 loader
   led(0) <= btn(0); -- visual indication of btn press
   -- btn(0) has inverted logic
-  reset_n <= btn(0);
+  
+  process(clk_pixel)
+  begin
+    if rising_edge(clk_pixel) then
+      reset_n <= btn(0) and locked;
+    end if;
+  end process;
 
   clkgen: entity work.clk_25_100_125_25
   port map
@@ -134,7 +140,7 @@ begin
   (
     clk        => clk_pixel,
     pixclk     => clk_pixel,
-    locked     => locked,
+    reset_n    => reset_n,
     ser_rx     => ftdi_txd,
     LCD_DAT(7 downto 6) => S_vga_r(2 downto 1),
     LCD_DAT(5 downto 3) => S_vga_g(2 downto 0),
