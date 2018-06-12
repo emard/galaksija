@@ -63,7 +63,7 @@ begin
         end
       end else begin
         h_pos <= h_pos + 1;
-        rgb_data <= (h_pos < 32*8*2 && v_pos < 200*2) ? data_out_rotated[h_pos[3:1]] ? 24'h000000 : 24'hffffff : 24'h000000;
+        rgb_data <= (h_pos > 5 && h_pos < 32*8*2+4 && v_pos < 200*2) ? data_out_rotated[h_pos[3:1]] ? 24'h000000 : 24'hffffff : 24'h000000;
       end
       lcd_den <= !visible;
       lcd_hsync <= !((h_pos >= (h_visible + h_front)) && (h_pos < (h_visible + h_front + h_sync)));
