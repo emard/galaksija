@@ -34,15 +34,15 @@ parameter v_total = v_visible + v_front + v_sync + v_back;
 wire h_active, v_active, visible;
 
 reg [3:0] text_v_pos;
-reg [3:0] font_line;
+reg [4:0] font_line;
 
 always @(posedge clk) 
 begin
   if (resetn == 0) begin
-    h_pos <= 10'b0;
-    v_pos <= 10'b0;
-    text_v_pos <= 4'b0;
-    font_line  <= 4'b0;
+    h_pos <= 0;
+    v_pos <= 0;
+    text_v_pos <= 0;
+    font_line  <= 0;
   end else begin
     //Pixel counters
       if (h_pos == h_total - 1) begin
@@ -53,8 +53,8 @@ begin
           font_line <= 0;
         end else begin
           v_pos <= v_pos + 1;
-          if (font_line != 10'd12)
-            font_line <= font_line + 1;            
+          if (font_line != 24)
+            font_line <= font_line + 1;
           else
           begin
             font_line <= 0;
@@ -63,7 +63,7 @@ begin
         end
       end else begin
         h_pos <= h_pos + 1;
-        rgb_data <= (h_pos < 32*8 && v_pos<208) ? data_out[h_pos[2:0]] ? 24'h000000 : 24'hffffff : 24'h000000 ;
+        rgb_data <= (h_pos < 32*8*2 && v_pos < 200*2) ? data_out[h_pos[3:1]] ? 24'h000000 : 24'hffffff : 24'h000000;
       end
       lcd_den <= !visible;
       lcd_hsync <= !((h_pos >= (h_visible + h_front)) && (h_pos < (h_visible + h_front + h_sync)));
@@ -87,19 +87,19 @@ wire [10:0] video_addr;
 assign char = ((code>63 && code<96) || (code>127 && code<192)) ?  code - 64 :
               (code>191) ? code -128 : code;
 
-font_rom galaxija_font(.clk(clk),.addr({ font_line, char }),.data_out(data_out));
+font_rom galaxija_font(.clk(clk),.addr({ font_line[4:1], char }),.data_out(data_out));
 
-assign video_addr = {text_v_pos,5'b00000} + h_pos[9:3];
+assign video_addr = {text_v_pos,5'b00000} + h_pos[9:4];
 
 reg [7:0] video_ram[0:2047];
 
 always @(posedge clk)
 begin
-        if (wr_ram1)
-            video_ram[addr[10:0]] <= data;
-        if (rd_ram1)
-            ram1_out <= video_ram[addr[10:0]];
-        code <= video_ram[video_addr[10:0]];
+  if (wr_ram1)
+    video_ram[addr[10:0]] <= data;
+  if (rd_ram1)
+    ram1_out <= video_ram[addr[10:0]];
+  code <= video_ram[video_addr[10:0]];
 end
 
 endmodule
