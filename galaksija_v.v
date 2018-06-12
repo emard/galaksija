@@ -1,8 +1,8 @@
 // vendor-independent top module
 module galaksija_v
 (
-    input clk, // 12 MHz by default (now 25 MHz)
-    input pixclk, // 25 MHz ?
+    input clk, // 12 MHz (now 25 MHz)
+    input pixclk, // 19.2 MHz (now 25 MHz)
     input locked, // 1 when clocks are ready to be used
     input ser_rx, // serial keyboard
     output [7:0] LCD_DAT,
@@ -38,9 +38,6 @@ end
        Video signal generator 
    ----------------------------*/
 
-reg [23:0] rgb_data;
-wire [9:0] h_pos;
-wire [9:0] v_pos;
 reg rd_ram1;
 reg wr_ram1;
 wire [7:0] ram1_out;
@@ -51,18 +48,32 @@ wire [7:0] odata;
 assign LCD_CLK = pixclk;
 assign LCD_RST = 1'b1;
 assign LCD_PWM = 1'b1;
-video generator ( .clk(pixclk), // pixel clock in
-                  .resetn(locked),
-                  .lcd_dat(LCD_DAT),
-                  .lcd_hsync(LCD_HS),
-                  .lcd_vsync(LCD_VS),
-                  .lcd_den(LCD_DEN),
-                  .rd_ram1(rd_ram1),
-                  .wr_ram1(wr_ram1),
-                  .ram1_out(ram1_out),
-				  .addr(addr[10:0]),
-				  .data(odata));
 
+video
+ #(
+  .h_visible(10'd320),
+  .h_front(10'd20),
+  .h_sync(10'd30),
+  .h_back(10'd38),
+  .v_visible(10'd240),
+  .v_front(10'd10), // increased 4->10
+  .v_sync(10'd3),
+  .v_back(10'd15)
+ )
+ generator
+ (
+  .clk(pixclk), // pixel clock in (should be 19.2 MHz, we supply 25 MHz)
+  .resetn(locked),
+  .lcd_dat(LCD_DAT),
+  .lcd_hsync(LCD_HS),
+  .lcd_vsync(LCD_VS),
+  .lcd_den(LCD_DEN),
+  .rd_ram1(rd_ram1),
+  .wr_ram1(wr_ram1),
+  .ram1_out(ram1_out),
+  .addr(addr[10:0]),
+  .data(odata)
+ );
 
 /* ----------------------------
        Custom video generator 
