@@ -1,21 +1,22 @@
-module video (input clk, //19.2MHz pixel clock in
-              input resetn,
-              output reg [7:0] lcd_dat,
-              output reg lcd_hsync,
-              output reg lcd_vsync,
-              output reg lcd_den,
-              input rd_ram1,
-              input wr_ram1,
-              input [10:0] addr,
-              output reg [7:0] ram1_out,
-              input [7:0] data
-
+module video
+(
+  input clk,   // 19.2 MHz pixel clock in
+  input resetn,
+  output reg [7:0] lcd_dat,
+  output reg lcd_hsync,
+  output reg lcd_vsync,
+  output reg lcd_den,
+  input rd_ram1,
+  input wr_ram1,
+  input [10:0] addr,
+  output reg [7:0] ram1_out,
+  input [7:0] data
 );
-              
+
 reg [9:0] h_pos;
 reg [9:0] v_pos;
 reg [23:0] rgb_data;
-            
+
 parameter h_visible = 10'd320;
 parameter h_front = 10'd20;
 parameter h_sync = 10'd30;
@@ -53,7 +54,7 @@ begin
           text_v_pos <= 0;
           font_line <= 0;
         end else begin
-          v_pos <= v_pos + 1;          
+          v_pos <= v_pos + 1;
           if (font_line != 10'd12)
             font_line <= font_line + 1;            
           else
@@ -82,30 +83,30 @@ assign h_active = (h_pos < h_visible);
 assign v_active = (v_pos < v_visible);
 assign visible = h_active && v_active;
 
-    wire [7:0] data_out;
-    reg [7:0] code;
-    wire [7:0] attr;
+wire [7:0] data_out;
+reg [7:0] code;
+wire [7:0] attr;
 
-    wire [6:0] char;
+wire [6:0] char;
 
-    wire [10:0] video_addr;
+wire [10:0] video_addr;
 
-    assign char = ((code>63 && code<96) || (code>127 && code<192)) ?  code - 64 :
-	    (code>191) ? code -128 : code;
+assign char = ((code>63 && code<96) || (code>127 && code<192)) ?  code - 64 :
+              (code>191) ? code -128 : code;
 
-    font_rom galaxija_font(.clk(clk),.addr({ font_line, char }),.data_out(data_out));
+font_rom galaxija_font(.clk(clk),.addr({ font_line, char }),.data_out(data_out));
 
-    assign video_addr = {text_v_pos,5'b00000} + h_pos[9:3];
-    
+assign video_addr = {text_v_pos,5'b00000} + h_pos[9:3];
 
-   reg [7:0] video_ram[0:2047];
+reg [7:0] video_ram[0:2047];
 
-    always @(posedge clk)
-    begin
+always @(posedge clk)
+begin
         if (wr_ram1)
             video_ram[addr[10:0]] <= data;
         if (rd_ram1)
             ram1_out <= video_ram[addr[10:0]];
         code <= video_ram[video_addr[10:0]];
-    end
+end
+
 endmodule
