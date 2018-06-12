@@ -143,6 +143,8 @@ begin
     LCD_VS     => S_vga_vsync,
     LCD_DEN    => S_vga_blank
   );
+  
+  -- HDMI will report 960x260 @ 76.1 Hz
 
   -- led(7) <= not S_vga_vsync;
   -- led(1) <= locked;
