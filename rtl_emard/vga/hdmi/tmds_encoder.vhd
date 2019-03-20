@@ -35,15 +35,15 @@ library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.STD_LOGIC_UNSIGNED.ALL;
 
-entity TMDS_encoder is
+entity tmds_encoder is
     Port ( clk     : in  STD_LOGIC;
            data    : in  STD_LOGIC_VECTOR (7 downto 0);
            c       : in  STD_LOGIC_VECTOR (1 downto 0);
            blank   : in  STD_LOGIC;
            encoded : out  STD_LOGIC_VECTOR (9 downto 0));
-end TMDS_encoder;
+end tmds_encoder;
 
-architecture Behavioral of TMDS_encoder is
+architecture Behavioral of tmds_encoder is
    signal xored  : STD_LOGIC_VECTOR (8 downto 0);
    signal xnored : STD_LOGIC_VECTOR (8 downto 0);
    

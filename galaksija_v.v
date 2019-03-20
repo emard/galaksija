@@ -290,7 +290,7 @@ assign we_1 = wr_ram2 & cs_1;
 assign we_2 = wr_ram2 & cs_2;
 assign we_3 = wr_ram2 & cs_3;
 
-bram_true2p_1clk
+bram_true2p_2clk
  #(
     .dual_port(0),
     .data_width(8),
@@ -298,14 +298,14 @@ bram_true2p_1clk
  )
  ram00
  (
-   .clk(clk),
+   .clk_a(clk),
    .addr_a(addr[13:0]),
    .we_a(we_0),
    .data_in_a(odata),
    .data_out_a(ram00_out)
  );
 
-bram_true2p_1clk
+bram_true2p_2clk
  #(
     .dual_port(0),
     .data_width(8),
@@ -313,14 +313,14 @@ bram_true2p_1clk
  )
  ram01
  (
-   .clk(clk),
+   .clk_a(clk),
    .addr_a(addr[13:0]),
    .we_a(we_1),
    .data_in_a(odata),
    .data_out_a(ram01_out)
  );
 
-bram_true2p_1clk
+bram_true2p_2clk
  #(
     .dual_port(0),
     .data_width(8),
@@ -328,14 +328,14 @@ bram_true2p_1clk
  )
  ram10
  (
-   .clk(clk),
+   .clk_a(clk),
    .addr_a(addr[13:0]),
    .we_a(we_2),
    .data_in_a(odata),
    .data_out_a(ram10_out)
  );
 
-bram_true2p_1clk
+bram_true2p_2clk
  #(
     .dual_port(0),
     .data_width(8),
@@ -343,7 +343,7 @@ bram_true2p_1clk
  )
  ram11
  (
-   .clk(clk),
+   .clk_a(clk),
    .addr_a(addr[13:0]),
    .we_a(we_3),
    .data_in_a(odata),

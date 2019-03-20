@@ -27,8 +27,8 @@ CONSTRAINTS = constraints/ulx3s_v20.lpf
 TOP_MODULE = galaksija_ulx3s
 TOP_MODULE_FILE = top/$(TOP_MODULE).vhd
 
-#CLK0_NAME = clk_25_250_125_25
-#CLK0_FILE_NAME = clocks/$(CLK0_NAME).v
+CLK0_NAME = clk_25_100_125_25
+CLK0_FILE_NAME = clocks/$(CLK0_NAME).v
 #CLK0_OPTIONS_OLD = \
 #  --input=25 \
 #  --output=250 \
@@ -37,18 +37,19 @@ TOP_MODULE_FILE = top/$(TOP_MODULE).vhd
 #  --s2=25 \
 #  --p2=0
 # for new ecppll: to override above, rename CLK0_OPTIONS_NEW -> CLK0_OPTIONS
-#CLK0_OPTIONS = \
-#  --module=$(CLK0_NAME) \
-#  --clkin_name=clki \
-#  --clkin=25 \
-#  --clkout0_name=clko \
-#  --clkout0=250 \
-#  --clkout1_name=clks1 \
-#  --clkout1=125 \
-#  --clkout2_name=clks2 \
-#  --clkout2=25
+CLK0_OPTIONS = \
+  --module=$(CLK0_NAME) \
+  --clkin_name=clki \
+  --clkin=25 \
+  --clkout0_name=clkop \
+  --clkout0=100 \
+  --clkout1_name=clkos \
+  --clkout1=125 \
+  --clkout2_name=clkos2 \
+  --clkout2=25
 
 VERILOG_FILES = \
+  $(CLK0_FILE_NAME) \
   ../../../galaksija_v.v \
   ../../../rom_memory.v \
   ../../../font_rom.v \
@@ -59,16 +60,16 @@ VERILOG_FILES = \
   ../../../tv80_mcode.v \
   ../../../tv80n.v \
   ../../../tv80_reg.v \
+  ../../../rtl_emard/vga/hdmi/fake_differential.v \
+  ../../../rtl_emard/generic/bram_true2p_2clk.v
 
 VHDL_FILES = \
   $(TOP_MODULE_FILE) \
-  clocks/clk_25_100_125_25.vhd \
   top/galaksija.vhd \
-  ../../../rtl_emard/generic/bram_true2p_1clk.vhd \
   ../../../rtl_emard/vga/hdmi/vga2dvid.vhd \
   ../../../rtl_emard/vga/hdmi/tmds_encoder.vhd
 
 SCRIPTS = ../scripts
-include $(SCRIPTS)/trellis_path.mk
 include $(SCRIPTS)/diamond_path.mk
-include $(SCRIPTS)/diamond_main.mk
+include $(SCRIPTS)/trellis_path.mk
+include $(SCRIPTS)/trellis_main.mk
