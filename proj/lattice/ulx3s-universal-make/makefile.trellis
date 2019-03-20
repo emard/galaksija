@@ -2,7 +2,7 @@
 PROJECT = galaksija
 BOARD = ulx3s
 # 12 25 45 85
-FPGA_SIZE = 85
+FPGA_SIZE = 12
 
 FPGA_PACKAGE = 6bg381c
 # config flash: 1:SPI (standard), 4:QSPI (quad)
@@ -60,13 +60,14 @@ VERILOG_FILES = \
   ../../../tv80_mcode.v \
   ../../../tv80n.v \
   ../../../tv80_reg.v \
-  ../../../rtl_emard/vga/hdmi/fake_differential.v \
+  ../../../rtl_emard/vga/hdmi/fake_differential_v.v \
   ../../../rtl_emard/generic/bram_true2p_2clk.v
 
 VHDL_FILES = \
   $(TOP_MODULE_FILE) \
   top/galaksija.vhd \
   ../../../rtl_emard/vga/hdmi/vga2dvid.vhd \
+  ../../../rtl_emard/vga/hdmi/fake_differential.vhd \
   ../../../rtl_emard/vga/hdmi/tmds_encoder.vhd
 
 SCRIPTS = ../scripts
