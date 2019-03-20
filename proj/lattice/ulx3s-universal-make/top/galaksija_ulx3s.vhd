@@ -33,7 +33,7 @@ port
   wifi_txd: in    std_logic;
   -- WiFi additional signaling
   wifi_en: inout  std_logic := 'Z'; -- '0' will disable wifi by default
-  wifi_gpio0: inout std_logic := 'Z';
+  wifi_gpio0: out std_logic;
 
   -- ADC MAX11123
   adc_csn, adc_sclk, adc_mosi: out std_logic;
