@@ -176,7 +176,7 @@ video
 		rd_key = 0;
 
 		wr_latch = 0;
-
+		idata = 8'hff;
 		casex ({~wr_n,~rd_n,mreq_n,addr[15:0]})
 			// MEM MAP
 			{3'b010,16'b0000xxxxxxxxxxxx}: begin idata = rom1_out; rd_rom1 = 1; end         // 0x0000-0x0fff
