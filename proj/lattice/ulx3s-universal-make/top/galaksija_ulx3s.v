@@ -99,10 +99,9 @@ inout wire usb_fpga_dn
 //flash_clk    : out     std_logic;
 //flash_csn    : out     std_logic;
 
+localparam C_ddr = 1'b1;
 
-
-reg reset_n;  //alias ps2_clk : std_logic is usb_fpga_dp;
-//alias ps2_dat : std_logic is usb_fpga_dn;
+reg reset_n;
 wire clk_pixel; wire clk_pixel_shift; wire clkn_pixel_shift; wire locked;
 wire [7:0] S_LCD_DAT;
 wire [2:0] S_vga_r; wire [2:0] S_vga_g; wire [2:0] S_vga_b;
@@ -124,61 +123,86 @@ wire S_spdif_out;
     reset_n <= btn[0] & locked;
   end
 
-  clk_25_125_125_25 clkgen(
+  clk_25_125_125_25
+  clkgen_inst
+  (
     .clki(clk_25mhz),
     //  25 MHz input from board
     .clkop(clk_pixel_shift),
     // 125 MHz
+    .clkos(clkn_pixel_shift),
+    // 125 MHz inverted
     .clkos2(clk_pixel),
     //  25 MHz
-    .locked(locked));
+    .locked(locked)
+  );
 
-  galaksija_v galaksija_module(
-      .clk(clk_pixel),
+  galaksija_v
+  galaksija_inst
+  (
+    .clk(clk_pixel),
     .pixclk(clk_pixel),
     .reset_n(reset_n),
     .ser_rx(ftdi_txd),
     .LCD_DAT(S_LCD_DAT),
     .LCD_HS(S_vga_hsync),
     .LCD_VS(S_vga_vsync),
-    .LCD_DEN(S_vga_blank));
+    .LCD_DEN(S_vga_blank)
+  );
 
-  assign S_vga_r[2:1] = S_LCD_DAT[7:6];
-  assign S_vga_g[2:0] = S_LCD_DAT[5:3];
-  assign S_vga_b[2:0] = S_LCD_DAT[2:0];
+  // register stage to offload routing
+  reg R_vga_hsync, R_vga_vsync, R_vga_blank;
+  reg [2:0] R_vga_r, R_vga_g, R_vga_b;
+  always @(posedge clk_pixel)
+  begin
+    R_vga_hsync <= S_vga_hsync;
+    R_vga_vsync <= S_vga_vsync;
+    R_vga_blank <= S_vga_blank;
+    R_vga_r[2:1] <= S_LCD_DAT[7:6];
+    R_vga_g[2:0] <= S_LCD_DAT[5:3];
+    R_vga_b[2:0] <= S_LCD_DAT[2:0];
+  end
+
+  
   // HDMI will report 960x260 @ 76.1 Hz
   // led(7) <= not S_vga_vsync;
   // led(1) <= locked;
-  vga2dvid #(
-      .C_ddr(1'b1),
-    .C_depth(3))
-  vga2dvi_converter(
-      .clk_pixel(clk_pixel),
+  vga2dvid
+  #(
+    .C_ddr(C_ddr),
+    .C_depth(3)
+  )
+  vga2dvi_converter
+  (
+    .clk_pixel(clk_pixel),
     // 25 MHz
     .clk_shift(clk_pixel_shift),
     // 5*25 MHz
-    .in_red(S_vga_r),
-    .in_green(S_vga_g),
-    .in_blue(S_vga_b),
-    .in_hsync(S_vga_hsync),
-    .in_vsync(S_vga_vsync),
-    .in_blank(S_vga_blank),
+    .in_red(R_vga_r),
+    .in_green(R_vga_g),
+    .in_blue(R_vga_b),
+    .in_hsync(R_vga_hsync),
+    .in_vsync(R_vga_vsync),
+    .in_blank(R_vga_blank),
     // single-ended output ready for differential buffers
     .out_red(dvid_red),
     .out_green(dvid_green),
     .out_blue(dvid_blue),
-    .out_clock(dvid_clock));
+    .out_clock(dvid_clock)
+  );
 
-  fake_differential_v #(
-      .C_ddr(1))
-  fake_differential_instance(
-      .clk_shift(clk_pixel_shift),
+  fake_differential_v
+  #(
+    .C_ddr(C_ddr)
+  )
+  fake_differential_instance
+  (
+    .clk_shift(clk_pixel_shift),
     .in_clock(dvid_clock),
     .in_red(dvid_red),
     .in_green(dvid_green),
     .in_blue(dvid_blue),
     .out_p(gpdi_dp),
-    .out_n(gpdi_dn));
-
-
+    .out_n(gpdi_dn)
+  );
 endmodule
