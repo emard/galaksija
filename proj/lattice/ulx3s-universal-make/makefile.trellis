@@ -2,7 +2,7 @@
 PROJECT = galaksija
 BOARD = ulx3s
 # 12 25 45 85
-FPGA_SIZE = 85
+FPGA_SIZE = 12
 
 FPGA_PACKAGE = 6bg381c
 # config flash: 1:SPI (standard), 4:QSPI (quad)
@@ -24,6 +24,7 @@ OPENOCD_INTERFACE=$(SCRIPTS)/ft231x.ocd
 
 # ******* design files *******
 CONSTRAINTS = constraints/ulx3s_v20_segpdi.lpf
+#CONSTRAINTS = constraints/ulx3s_v17patch_segpdi.lpf
 TOP_MODULE = galaksija_ulx3s
 TOP_MODULE_FILE = top/$(TOP_MODULE).v
 
