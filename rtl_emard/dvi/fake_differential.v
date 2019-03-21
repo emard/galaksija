@@ -1,6 +1,6 @@
 // DDR mode uses Lattice ECP5 vendor-specific module ODDRX1F
 
-module fake_differential_v
+module fake_differential
 (
   input clk_shift, // used only in DDR mode
   // [1:0]:DDR [0]:SDR TMDS

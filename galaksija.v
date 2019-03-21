@@ -1,5 +1,5 @@
 // vendor-independent top module
-module galaksija_v
+module galaksija
 (
     input clk, // 12 MHz (now 25 MHz)
     input pixclk, // 19.2 MHz (now 25 MHz)

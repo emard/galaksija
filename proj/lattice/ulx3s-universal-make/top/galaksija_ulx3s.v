@@ -99,7 +99,7 @@ inout wire usb_fpga_dn
 //flash_clk    : out     std_logic;
 //flash_csn    : out     std_logic;
 
-localparam C_ddr = 1'b1;
+localparam C_ddr = 1'b1; // 1-DDR 0-SDR
 
 reg reset_n;
 wire clk_pixel, clk_pixel_shift, clk_pixel_shift1, clk_pixel_shift2, locked;
@@ -140,7 +140,7 @@ wire S_spdif_out;
     assign clk_pixel_shift = clk_pixel_shift2;
   endgenerate
 
-  galaksija_v
+  galaksija
   galaksija_inst
   (
     .clk(clk_pixel),
@@ -177,10 +177,8 @@ wire S_spdif_out;
   )
   vga2dvi_converter
   (
-    .clk_pixel(clk_pixel),
-    // 25 MHz
-    .clk_shift(clk_pixel_shift),
-    // 5*25 MHz
+    .clk_pixel(clk_pixel), // 25 MHz
+    .clk_shift(clk_pixel_shift), // 5*25 or 10*25 MHz
     .in_red(R_vga_r),
     .in_green(R_vga_g),
     .in_blue(R_vga_b),
@@ -194,7 +192,7 @@ wire S_spdif_out;
     .out_clock(dvid_clock)
   );
 
-  fake_differential_v
+  fake_differential
   #(
     .C_ddr(C_ddr)
   )

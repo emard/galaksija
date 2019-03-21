@@ -51,7 +51,7 @@ CLK0_OPTIONS = \
 VERILOG_FILES = \
   $(TOP_MODULE_FILE) \
   $(CLK0_FILE_NAME) \
-  ../../../galaksija_v.v \
+  ../../../galaksija.v \
   ../../../rom_memory.v \
   ../../../font_rom.v \
   ../../../video.v \
@@ -61,13 +61,12 @@ VERILOG_FILES = \
   ../../../tv80_mcode.v \
   ../../../tv80n.v \
   ../../../tv80_reg.v \
-  ../../../rtl_emard/vga/hdmi/fake_differential_v.v \
+  ../../../rtl_emard/dvi/fake_differential.v \
   ../../../rtl_emard/generic/bram_true2p_2clk.v
 
 VHDL_FILES = \
-  top/galaksija.vhd \
-  ../../../rtl_emard/vga/hdmi/vga2dvid.vhd \
-  ../../../rtl_emard/vga/hdmi/tmds_encoder.vhd
+  ../../../rtl_emard/dvi/vga2dvid.vhd \
+  ../../../rtl_emard/dvi/tmds_encoder.vhd
 
 SCRIPTS = ../scripts
 include $(SCRIPTS)/diamond_path.mk
