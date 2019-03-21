@@ -27,7 +27,7 @@ CONSTRAINTS = constraints/ulx3s_v20_segpdi.lpf
 TOP_MODULE = galaksija_ulx3s
 TOP_MODULE_FILE = top/$(TOP_MODULE).v
 
-CLK0_NAME = clk_25_125_125_25
+CLK0_NAME = clk_25_250_125_25
 CLK0_FILE_NAME = clocks/$(CLK0_NAME).v
 #CLK0_OPTIONS_OLD = \
 #  --input=25 \
@@ -42,7 +42,7 @@ CLK0_OPTIONS = \
   --clkin_name=clki \
   --clkin=25 \
   --clkout0_name=clkop \
-  --clkout0=125 \
+  --clkout0=250 \
   --clkout1_name=clkos \
   --clkout1=125 \
   --clkout2_name=clkos2 \

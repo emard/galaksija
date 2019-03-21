@@ -102,7 +102,7 @@ inout wire usb_fpga_dn
 localparam C_ddr = 1'b1;
 
 reg reset_n;
-wire clk_pixel; wire clk_pixel_shift; wire clkn_pixel_shift; wire locked;
+wire clk_pixel, clk_pixel_shift, clk_pixel_shift1, clk_pixel_shift2, locked;
 wire [7:0] S_LCD_DAT;
 wire [2:0] S_vga_r; wire [2:0] S_vga_g; wire [2:0] S_vga_b;
 wire S_vga_vsync; wire S_vga_hsync;
@@ -123,19 +123,22 @@ wire S_spdif_out;
     reset_n <= btn[0] & locked;
   end
 
-  clk_25_125_125_25
+  clk_25_250_125_25
   clkgen_inst
   (
-    .clki(clk_25mhz),
-    //  25 MHz input from board
-    .clkop(clk_pixel_shift),
-    // 125 MHz
-    .clkos(clkn_pixel_shift),
-    // 125 MHz inverted
-    .clkos2(clk_pixel),
-    //  25 MHz
+    .clki(clk_25mhz), //  25 MHz input from board
+    .clkop(clk_pixel_shift2), // 250 MHz
+    .clkos(clk_pixel_shift1), // 125 MHz
+    .clkos2(clk_pixel), //  25 MHz
     .locked(locked)
   );
+  
+  generate
+  if(C_ddr)
+    assign clk_pixel_shift = clk_pixel_shift1;
+  else
+    assign clk_pixel_shift = clk_pixel_shift2;
+  endgenerate
 
   galaksija_v
   galaksija_inst
