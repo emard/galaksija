@@ -162,10 +162,10 @@ wire S_spdif_out;
     R_vga_vsync <= S_vga_vsync;
     R_vga_blank <= S_vga_blank;
     R_vga_r[2:1] <= S_LCD_DAT[7:6];
+    R_vga_r[0]   <= S_LCD_DAT[6];
     R_vga_g[2:0] <= S_LCD_DAT[5:3];
     R_vga_b[2:0] <= S_LCD_DAT[2:0];
   end
-
   
   // HDMI will report 960x260 @ 76.1 Hz
   // led(7) <= not S_vga_vsync;
