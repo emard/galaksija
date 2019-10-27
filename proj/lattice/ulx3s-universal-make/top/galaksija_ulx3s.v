@@ -167,7 +167,7 @@ wire S_spdif_out;
     R_vga_b[2:0] <= S_LCD_DAT[2:0];
   end
   
-  // HDMI will report 960x260 @ 76.1 Hz
+  // DVI will report 960x260 @ 76.1 Hz
   // led(7) <= not S_vga_vsync;
   // led(1) <= locked;
   vga2dvid
